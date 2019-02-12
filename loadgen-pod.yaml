@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: loadgen
+  namespace: loadgen
+  labels:
+    app: loadgen
+    user: howard
+spec:
+  containers:
+  - name: loadgen
+    image: howardyoo/loadgen:0.0.3
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: 8080
