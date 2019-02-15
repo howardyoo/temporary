@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:   cadvisor
+spec:
+  containers:
+    - name: cadvisor
+      image: wavefronthq/cadvisor:latest
+      volumeMounts:
+        - name: rootfs
+          mountPath: /rootfs
+          readOnly: true
+        - name: var-run
+          mountPath: /var/run
+          readOnly: false
+        - name: sys
+          mountPath: /sys
+          readOnly: true
+        - name: docker
+          mountPath: /var/lib/docker
+          readOnly: true
+      ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+      args:
+        - --storage_driver=wavefront
+        - --storage_driver_wf_source=kube-docker
+        - --storage_driver_wf_proxy_host=wavefront-proxy:2878
+        - --storage_driver_wf_prefix=kube.cadvisor.
+  volumes:
+    - name: rootfs
+      hostPath:
+        path: /
+    - name: var-run
+      hostPath:
+        path: /var/run
+    - name: sys
+      hostPath:
+        path: /sys
+    - name: docker
+      hostPath:
+        path: /var/lib/docker
